@@ -31,10 +31,21 @@ export default class CoubService {
         waitUntil: 'networkidle2'
       })
       await page.content()
-      await page.waitForSelector(
-        'a[href^="https://coub-anubis-a.akamaized.net"]'
-      )
-      await page.click('a[href^="https://coub-anubis-a.akamaized.net"]')
+
+      const isLinkExist = await page
+        .waitForSelector('a[href^="https://coub-anubis-a.akamaized.net"]', {
+          timeout: 10000
+        })
+        .then(res => {
+          return res
+        })
+        .catch(err => {
+          this.logger.error(err)
+        })
+
+      if (isLinkExist) {
+        await page.click('a[href^="https://coub-anubis-a.akamaized.net"]')
+      }
     }
 
     await new Promise(res => {
